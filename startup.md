@@ -1,4 +1,4 @@
-# FedSense Demo Startup Guide
+# Edge-HAR Demo Startup Guide
 
 Follow these steps exactly to run the flawless showcase.
 

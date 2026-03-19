@@ -1,6 +1,6 @@
-# FedSense
+# Edge-HAR
 
-FedSense is a phased federated learning demo for human activity recognition on local WiFi. The laptop hosts the Flower server plus two simulated UCI HAR clients, and an Android Termux client can join as a real edge device without sending raw sensor data off-device.
+Edge-HAR is a phased federated learning demo for human activity recognition on local WiFi. The laptop hosts the Flower server plus two simulated UCI HAR clients, and an Android Termux client can join as a real edge device without sending raw sensor data off-device.
 
 ## Phase-Oriented Build
 

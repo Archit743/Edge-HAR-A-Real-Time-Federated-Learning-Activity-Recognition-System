@@ -1,4 +1,4 @@
-# FedSense Implementation Plan
+# Edge-HAR Implementation Plan
 
 ## Scope Lock
 This implementation plan follows the agreed constraints:

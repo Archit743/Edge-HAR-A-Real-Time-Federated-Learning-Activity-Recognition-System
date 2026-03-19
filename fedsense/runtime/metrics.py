@@ -129,7 +129,7 @@ class MetricsRecorder:
         left_axis.set_xlabel('Round')
         left_axis.set_ylabel('Loss')
         right_axis.set_ylabel('Accuracy')
-        left_axis.set_title(f'FedSense Convergence ({self.strategy_name.upper()})')
+        left_axis.set_title(f'Edge-HAR Convergence ({self.strategy_name.upper()})')
         left_axis.grid(True, linestyle='--', linewidth=0.5, alpha=0.4)
 
         self.plot_path.parent.mkdir(parents=True, exist_ok=True)

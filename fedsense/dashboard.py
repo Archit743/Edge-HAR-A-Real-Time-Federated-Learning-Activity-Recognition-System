@@ -11,7 +11,7 @@ HTML_TEMPLATE = """
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FedSense Orchestrator</title>
+    <title>Edge-HAR Orchestrator</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -167,7 +167,7 @@ HTML_TEMPLATE = """
 
     <header>
         <div>
-            <h1>FedSense Orchestrator</h1>
+            <h1>Edge-HAR Orchestrator</h1>
             <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 4px;">Zero-Trust Hub ✦ FedAdam Active</div>
         </div>
         <div class="header-controls">

@@ -1,7 +1,7 @@
-# FedSense
+# Edge-HAR
 
 ## Overview
-FedSense is a federated learning demo that trains a human activity recognition model across real devices on local WiFi. A laptop runs the aggregation server and two simulated clients. An Android phone running Termux acts as a real edge client.
+Edge-HAR is a federated learning demo that trains a human activity recognition model across real devices on local WiFi. A laptop runs the aggregation server and two simulated clients. An Android phone running Termux acts as a real edge client.
 
 The phone captures live accelerometer and gyroscope data, performs local training, and sends only model updates plus scalar metrics to the server. Raw sensor data never leaves the phone.
 

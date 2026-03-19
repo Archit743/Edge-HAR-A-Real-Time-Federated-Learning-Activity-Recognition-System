@@ -38,10 +38,21 @@ scripts/
   run_simulation.py
 ```
 
-## Setup
+## Setup (Laptop/Hub)
 
 ```powershell
 venv\Scripts\pip.exe install -r requirements.txt
+```
+
+## Setup (Android Termux Edge Node)
+Because Android Termux inherently struggles to compile massive C++ machine learning binaries via pure Python `pip`, you must install PyTorch using Termux's native package manager before fetching the edge requirements:
+
+```bash
+pkg update && pkg upgrade
+pkg install python python-numpy termux-api
+pkg install tur-repo
+pkg install python-torch
+pip install -r requirements-edge.txt
 ```
 
 ## Main Commands

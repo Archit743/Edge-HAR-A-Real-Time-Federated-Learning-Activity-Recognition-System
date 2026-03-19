@@ -1,0 +1,9 @@
+flwr>=1.9.0
+numpy>=1.26.0
+pandas>=2.2.0
+requests>=2.31.0
+opacus>=1.4.0
+
+# Note: torch, tensorboard, and matplotlib are explicitly excluded here.
+# Termux on Android heavily struggles to compile PyPI versions of these.
+# They should be installed via `pkg install python-torch` or custom wheel files.

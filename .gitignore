@@ -3,6 +3,6 @@ __pycache__/
 *.pyc
 artifacts/
 phone/*.csv
-data/
+/data/
 .pytest_cache/
 .ruff_cache/

@@ -1,7 +1,9 @@
 venv/
 __pycache__/
 *.pyc
-artifacts/
+artifacts/*
+!artifacts/partitions/
+!artifacts/partitions/uci_har_partitions.json
 phone/*.csv
 /data/
 .pytest_cache/

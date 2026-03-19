@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+artifacts/
+phone/*.csv
+data/
+.pytest_cache/
+.ruff_cache/

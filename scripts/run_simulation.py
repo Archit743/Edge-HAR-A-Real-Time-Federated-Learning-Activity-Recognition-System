@@ -1,0 +1,50 @@
+﻿from __future__ import annotations
+
+import argparse
+
+import flwr as fl
+
+from fedsense.baseline import run_centralized_baseline
+from fedsense.clients.simulated import SimulatedHarClient
+from fedsense.config import ensure_runtime_directories, load_config
+from fedsense.data.uci_har import prepare_federated_uci_har
+from fedsense.runtime.metrics import MetricsRecorder
+from fedsense.runtime.privacy import write_privacy_report
+from fedsense.server import create_strategy
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description='Run the simulated-only FedSense baseline.')
+    parser.add_argument('--config', default='configs/default.toml')
+    args = parser.parse_args()
+
+    config = load_config(args.config)
+    ensure_runtime_directories(config)
+    dataset = prepare_federated_uci_har(config)
+    run_centralized_baseline(config, dataset)
+
+    recorder = MetricsRecorder(
+        metrics_csv=config.output.metrics_csv,
+        plot_path=config.output.plot_path,
+        strategy_name=config.training.strategy,
+    )
+    strategy = create_strategy(dataset=dataset, config=config, recorder=recorder)
+
+    def client_fn(client_id: str) -> SimulatedHarClient:
+        partition = dataset.client_partitions[client_id]
+        return SimulatedHarClient(client_id=client_id, data=partition, config=config)
+
+    try:
+        fl.simulation.start_simulation(
+            client_fn=client_fn,
+            num_clients=config.data.num_clients,
+            config=fl.server.ServerConfig(num_rounds=config.training.rounds),
+            strategy=strategy,
+        )
+    finally:
+        recorder.render_plot()
+        write_privacy_report(output_root=config.output.root, report_path=config.output.privacy_report)
+
+
+if __name__ == '__main__':
+    main()

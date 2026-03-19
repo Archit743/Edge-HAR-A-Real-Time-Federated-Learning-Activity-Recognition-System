@@ -1,0 +1,46 @@
+[training]
+rounds = 10
+local_epochs = 2
+learning_rate = 0.001
+batch_size = 64
+strategy = "fedavg"
+proximal_mu = 0.01
+seed = 42
+device = "cpu"
+min_fit_clients = 2
+min_available_clients = 2
+min_phone_windows_per_round = 8
+
+[server]
+host = "10.245.234.79"
+port = 8080
+
+[data]
+dataset_root = "data/UCI HAR Dataset"
+partition_manifest = "artifacts/partitions/uci_har_partitions.json"
+dirichlet_alpha = 0.5
+num_clients = 2
+validation_fraction = 0.2
+window_size = 128
+stride = 64
+normalization_epsilon = 1e-6
+
+[output]
+root = "artifacts"
+metrics_csv = "artifacts/round_metrics.csv"
+plot_path = "artifacts/convergence_fedavg_vs_fedprox.png"
+privacy_report = "artifacts/privacy_audit_report.md"
+baseline_csv = "artifacts/centralized_baseline_metrics.csv"
+
+[phone]
+csv_path = "phone/sensor_log.csv"
+timestamp_column = "timestamp"
+label_column = "label"
+
+[extensions]
+enable_dashboard = false
+dashboard_host = "127.0.0.1"
+dashboard_port = 5000
+enable_dp = false
+dp_noise_multiplier = 1.1
+dp_max_grad_norm = 1.0

@@ -134,23 +134,35 @@ HTML_TEMPLATE = """
 
         const getNodes = () => [
             { id: 'hub', x: cw/2, y: ch/2, label: 'Central Aggregator', color: '#10b981', radius: 18 },
-            { id: 'sim', x: cw*0.15, y: ch/2, label: 'Simulated Node', color: '#3b82f6', radius: 12 },
-            { id: 'phone', x: cw*0.85, y: ch/2, label: 'Edge Phone', color: '#3b82f6', radius: 12 }
+            { id: 'sim1', x: cw*0.15, y: ch*0.25, label: 'Sim Node 1', color: '#3b82f6', radius: 12 },
+            { id: 'sim2', x: cw*0.15, y: ch*0.75, label: 'Sim Node 2', color: '#a855f7', radius: 12 },
+            { id: 'phone', x: cw*0.85, y: ch/2, label: 'Edge Phone', color: '#f59e0b', radius: 12 }
         ];
 
         let particles = [];
         
-        function spawnParticles() {
+        function spawnParticles(rejectionsCount=0) {
             const nodes = getNodes();
-            for(let i=0; i<10; i++) {
+            for(let i=0; i<15; i++) {
                 particles.push({
                     x: nodes[1].x, y: nodes[1].y, tx: nodes[0].x, ty: nodes[0].y,
-                    speed: 0.015 + Math.random()*0.02, progress: -Math.random()*0.5
+                    speed: 0.015 + Math.random()*0.02, progress: -Math.random()*0.5, color: '#3b82f6', isMalicious: false
                 });
                 particles.push({
                     x: nodes[2].x, y: nodes[2].y, tx: nodes[0].x, ty: nodes[0].y,
-                    speed: 0.015 + Math.random()*0.02, progress: -Math.random()*0.5
+                    speed: 0.015 + Math.random()*0.02, progress: -Math.random()*0.5, color: '#a855f7', isMalicious: false
                 });
+                if (rejectionsCount > 0) {
+                    particles.push({
+                        x: nodes[3].x, y: nodes[3].y, tx: nodes[0].x, ty: nodes[0].y,
+                        speed: 0.015 + Math.random()*0.02, progress: -Math.random()*0.5, color: '#ef4444', isMalicious: true
+                    });
+                } else {
+                    particles.push({
+                        x: nodes[3].x, y: nodes[3].y, tx: nodes[0].x, ty: nodes[0].y,
+                        speed: 0.015 + Math.random()*0.02, progress: -Math.random()*0.5, color: '#f59e0b', isMalicious: false
+                    });
+                }
             }
         }
 
@@ -161,18 +173,28 @@ HTML_TEMPLATE = """
             ctx.strokeStyle = '#222'; ctx.lineWidth = 1.5; ctx.beginPath();
             ctx.moveTo(nodes[1].x, nodes[1].y); ctx.lineTo(nodes[0].x, nodes[0].y);
             ctx.moveTo(nodes[2].x, nodes[2].y); ctx.lineTo(nodes[0].x, nodes[0].y);
+            ctx.moveTo(nodes[3].x, nodes[3].y); ctx.lineTo(nodes[0].x, nodes[0].y);
             ctx.stroke();
 
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
                 p.progress += p.speed;
+                if (p.isMalicious && p.progress >= 0.5) {
+                    // Exploding Red Packet Shield!
+                    ctx.fillStyle = '#ef4444';
+                    ctx.shadowBlur = 15; ctx.shadowColor = '#ef4444';
+                    ctx.beginPath(); ctx.arc(p.x + (p.tx - p.x)*0.5, p.y + (p.ty - p.y)*0.5, 6, 0, Math.PI*2); ctx.fill();
+                    ctx.shadowBlur = 0;
+                    particles.splice(i, 1);
+                    continue;
+                }
                 if (p.progress > 1) { particles.splice(i, 1); continue; }
                 if (p.progress > 0) {
                     let x = p.x + (p.tx - p.x) * p.progress;
                     let y = p.y + (p.ty - p.y) * p.progress;
                     ctx.fillStyle = '#fff';
-                    ctx.shadowBlur = 8; ctx.shadowColor = '#3b82f6';
-                    ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI*2); ctx.fill();
+                    ctx.shadowBlur = 8; ctx.shadowColor = p.color;
+                    ctx.beginPath(); ctx.arc(x, y, p.isMalicious ? 3.5 : 2.5, 0, Math.PI*2); ctx.fill();
                     ctx.shadowBlur = 0;
                 }
             }
@@ -245,9 +267,14 @@ HTML_TEMPLATE = """
             const data = payload.current;
             if (!data.length) return;
             
+            // Detect if a fresh training run started (CSV wiped)
+            if (data.length < prevCount) prevCount = 0;
+
             // If new round mathematically aggregated, animate the topology!
             if (data.length > prevCount) {
-                spawnParticles();
+                const latest = data[data.length - 1];
+                let rejections = parseInt(latest.security_rejections) || 0;
+                spawnParticles(rejections);
                 prevCount = data.length;
             }
 
@@ -311,7 +338,7 @@ HTML_TEMPLATE = """
                 return `<tr>${headers.map(h => {
                     let content = (typeof r[h] === 'string' && r[h].includes('.') && !isNaN(r[h])) ? parseFloat(r[h]).toFixed(4) : r[h];
                     if (h === 'security_rejections' && parseInt(r[h]) > 0) {
-                        content = `<span style="color:var(--error); font-weight:600;">🚫 ${r[h]} </span>`;
+                        content = `<span style="color:var(--error); font-weight:600;">${r[h]}</span>`;
                     }
                     return `<td>${content}</td>`;
                 }).join('')}<td>${cA}</td><td>${cL}</td></tr>`;

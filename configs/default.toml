@@ -1,5 +1,5 @@
 [training]
-rounds = 20
+rounds = 10
 local_epochs = 2
 learning_rate = 0.001
 batch_size = 64
@@ -7,8 +7,8 @@ strategy = "fedavg"
 proximal_mu = 0.01
 seed = 42
 device = "cpu"
-min_fit_clients = 2
-min_available_clients = 2
+min_fit_clients = 3
+min_available_clients = 3
 min_phone_windows_per_round = 8
 
 [server]

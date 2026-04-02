@@ -12,7 +12,7 @@ min_available_clients = 3
 min_phone_windows_per_round = 8
 
 [server]
-host = "10.245.234.79"
+host = "10.17.175.79"
 port = 8080
 
 [data]
